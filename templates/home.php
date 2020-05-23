@@ -36,7 +36,7 @@
 							</select>
 						</div>
 						<div class="col">
-							<a href="#"><button class="btn btn-warning">Acessar conta no Mercado Bitcoin</button></a>
+							<a href="https://www.mercadobitcoin.com.br/conta/login/" target="_blank"><button class="btn btn-warning">Acessar conta no Mercado Bitcoin</button></a>
 						</div>
 					</div>
 					<br><br>
@@ -84,5 +84,6 @@
 		<br><br><br>
 		<?php include "footer.html"; ?>	
 
+		<script src="../js/loadinfo.js"></script>
 	</body>
 </html>

@@ -1,7 +1,7 @@
 // require("dotenv-safe").load()
 require("dotenv-safe").config()
-const MercadoBitcoin = require("./api").MercadoBitcoin
-var infoApi = new MercadoBitcoin({ currency: 'LTC' })
+const MercadoBitcoinDados = require("./api").MercadoBitcoinDados
+var infoApi = new MercadoBitcoinDados({ currency: 'BTC' })
 
 setInterval(() => 
    infoApi.ticker((tick) => console.log(tick.ticker)),
