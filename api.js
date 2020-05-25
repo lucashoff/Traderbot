@@ -48,9 +48,7 @@ MercadoBitcoinTrade.prototype = {
         var queryString = qs.stringify({'tapi_method': method, 'tapi_nonce': dataAtual})
         if(parameters) queryString += '&' + qs.stringify(parameters)
       
-        var signature = crypto.createHmac('sha512', this.config.SECRET)
-                              .update(ENDPOINT_TRADE_PATH + '?' + queryString)
-                              .digest('hex')
+        var signature = crypto.createHmac('sha512', this.config.SECRET).update(ENDPOINT_TRADE_PATH + '?' + queryString).digest('hex')
       
         unirest.post(ENDPOINT_TRADE_API)
                .headers({'TAPI-ID': this.config.KEY})
