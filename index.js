@@ -2,41 +2,14 @@
 require("dotenv-safe").config();
 const MercadoBitcoinDados = require("./api").MercadoBitcoinDados
 const MercadoBitcoinTrade = require("./api").MercadoBitcoinTrade
-var infoApi = new MercadoBitcoinDados({ currency: 'BCH' });
+var infoApi = new MercadoBitcoinDados({ currency: process.env.COIN});
 var tradeApi = new MercadoBitcoinTrade({ 
-   currency: 'BCH', 
+   currency: process.env.COIN, 
    key: process.env.KEY, 
    secret: process.env.SECRET, 
    pin: process.env.PIN 
 });
 
-// setInterval(() => 
-//    infoApi.ticker((tick) => console.log(tick.ticker)),
-//    process.env.CRAWLER_INTERVAL
-// )
-
-setInterval(() => 
-   infoApi.ticker((response) => {
-      console.log(response.ticker);
-      if(response.ticker.last >= 1340){
-         getQuantity('BCH', response.ticker, true, (qty) =>{
-            tradeApi.placeBuyOrder(qty, response.ticker.sell, 
-               (data) => {
-                  console.log('Ordem de compra inserida no livro. '+data);
-                  //operando em STOP
-                  tradeApi.placeSellOrder(data.quantity, response.ticker.sell * parseFloat())
-               }
-         })
-         // tradeApi.placeSellOrder(0.001, 1.35,
-         //    (data) => console.log('Ordem de venda inserida no livro. ' + data),
-         //    (data) => console.log('Erro ao inserir ordem de venda no livro. ' + data))
-      }
-      else{
-         console.log('Abaixo do valor esperado.');
-      }
-   }),
-   process.env.CRAWLER_INTERVAL
-)
 
 function getQuantity(coin, price, isBuy, callback){
    price = parseFloat(price);
@@ -56,3 +29,32 @@ function getQuantity(coin, price, isBuy, callback){
    },
    (data) => console.log(data));
 }
+
+setInterval(() => 
+   infoApi.ticker((tick) => console.log(tick.ticker)),
+   process.env.CRAWLER_INTERVAL
+)
+
+// setInterval(() => 
+//    infoApi.ticker((response) => {
+//       console.log(response.ticker);
+//       if(response.ticker.last >= 1340){
+//          getQuantity('BCH', response.ticker, true, (qty) =>{
+//             tradeApi.placeBuyOrder(qty, response.ticker.sell, 
+//                (data) => {
+//                   console.log('Ordem de compra inserida no livro. '+data);
+//                   //operando em STOP
+//                   tradeApi.placeSellOrder(data.quantity, response.ticker.sell * parseFloat())
+//                }
+//          })
+//          // tradeApi.placeSellOrder(0.001, 1.35,
+//          //    (data) => console.log('Ordem de venda inserida no livro. ' + data),
+//          //    (data) => console.log('Erro ao inserir ordem de venda no livro. ' + data))
+//       }
+//       else{
+//          console.log('Abaixo do valor esperado.');
+//       }
+//    }),
+//    process.env.CRAWLER_INTERVAL
+// )
+
