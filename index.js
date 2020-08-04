@@ -10,29 +10,51 @@ var tradeApi = new MercadoBitcoinTrade({
    pin: process.env.PIN 
 });
 
+// code Lucas
+function getBalance(coin){
+   coin = coin.toLowerCase();
+   var balance
+   tradeApi.getAccountInfo((response_data) => {
+      balance = parseFloat(response_data.balance[coin].available).toFixed(5);   
+      balance = parseFloat(balance);
+      // console.log(balance);
+   },
+   (data) => console.log(data));
+}
+
+var saldo = getBalance(process.env.COIN);
+console.log('o saldo em '+process.env.COIN+' é: '+saldo);
+// setInterval(() => 
+//    getBalance('BCH');
+//    process.env.CRAWLER_INTERVAL
+// )
+
+// code da net
 function getQuantity(coin, price, isBuy, callback){
    price = parseFloat(price);
    coin = isBuy ? 'brl' : coin.toLowerCase();
 
    tradeApi.getAccountInfo((response_data) => {
-      var balance = parseFloat(response_data.balance[coin].available).toFixed(5);   
-      balance = parseFloat(balance);
-      if(isBuy && balance < 50){
-         return console.log('Sem saldo disponível para comprar!'); 
-      }else{
-         console.log(`Saldo disponível de ${coin}: ${balance}`);
-      }
+      var saldo = parseFloat(response_data.balance[coin].available).toFixed(5);   
+      saldo = parseFloat(saldo);
 
-      if(isBuy) balance = parseFloat((balance / price).toFixed(5))
-         callback(parseFloat(balance) - 0.00001)//tira a diferença que se ganha no arredondamento
+      console.log('saldo em '+coin+': '+saldo);
+      // if(isBuy && balance < 50){
+      //    return console.log('Sem saldo disponível para comprar!'); 
+      // }else{
+      //    console.log(`Saldo disponível de ${coin}: ${balance}`);
+      // }
+
+      // if(isBuy) balance = parseFloat((balance / price).toFixed(5))
+      //    callback(parseFloat(balance) - 0.00001)//tira a diferença que se ganha no arredondamento
    },
    (data) => console.log(data));
 }
 
-setInterval(() => 
-   infoApi.ticker((tick) => console.log(tick.ticker)),
-   process.env.CRAWLER_INTERVAL
-)
+// setInterval(() => 
+//    infoApi.ticker((tick) => console.log(tick.ticker)),
+//    process.env.CRAWLER_INTERVAL
+// )
 
 // setInterval(() => 
 //    infoApi.ticker((response) => {
