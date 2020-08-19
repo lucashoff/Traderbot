@@ -2,8 +2,9 @@
 require("dotenv-safe").config();
 const MercadoBitcoinDados = require("./api").MercadoBitcoinDados
 const MercadoBitcoinTrade = require("./api").MercadoBitcoinTrade
+const Coin = process.env.COIN;
 var infoApi = new MercadoBitcoinDados({ currency: process.env.COIN});
-var tradeApi = new MercadoBitcoinTrade({ 
+var tradeApi = new MercadoBitcoinTrade({
    currency: process.env.COIN, 
    key: process.env.KEY, 
    secret: process.env.SECRET, 
@@ -12,18 +13,42 @@ var tradeApi = new MercadoBitcoinTrade({
 
 // code Lucas
 function getBalance(coin){
+   coin = coin ? coin : 'brl';
    coin = coin.toLowerCase();
-   var balance
    tradeApi.getAccountInfo((response_data) => {
-      balance = parseFloat(response_data.balance[coin].available).toFixed(5);   
+      var balance = parseFloat(response_data.balance[coin].available).toFixed(5);   
       balance = parseFloat(balance);
-      // console.log(balance);
-   },
-   (data) => console.log(data));
+      if (coin != 'brl'){
+         console.log("o saldo é: "+coin.toUpperCase()+" "+ balance);
+      }else{
+         console.log("o saldo em reais é: R$ " + balance);
+      }
+      // return balance;
+   });
+   // console.log("o saldo é..:" + balance);   
+   // (data) => console.log(data));
 }
 
-var saldo = getBalance(process.env.COIN);
-console.log('o saldo em '+process.env.COIN+' é: '+saldo);
+function getCoinValue(){
+   infoApi.ticker((response) => {
+      var lastValue = parseFloat(response.ticker.last).toFixed(5);
+      console.log("o valor atual unitário de "+Coin+" é: R$ "+lastValue);
+   });
+}
+
+
+setInterval(() => {
+   getBalance(Coin);
+   getCoinValue();
+   console.log('------------------------------');
+   },
+   process.env.CRAWLER_INTERVAL
+)
+
+
+
+// var saldo = getBalance(process.env.COIN);
+// console.log('o saldo em '+process.env.COIN+' é: '+saldo);
 // setInterval(() => 
 //    getBalance('BCH');
 //    process.env.CRAWLER_INTERVAL
