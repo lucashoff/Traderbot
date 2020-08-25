@@ -12,21 +12,19 @@ var tradeApi = new MercadoBitcoinTrade({
 });
 
 // code Lucas
-function getBalance(coin){
+function getBalance(coin, callback){
    coin = coin ? coin : 'brl';
    coin = coin.toLowerCase();
    tradeApi.getAccountInfo((response_data) => {
       var balance = parseFloat(response_data.balance[coin].available).toFixed(5);   
       balance = parseFloat(balance);
-      if (coin != 'brl'){
-         console.log("o saldo é: "+coin.toUpperCase()+" "+ balance);
-      }else{
-         console.log("o saldo em reais é: R$ " + balance);
-      }
-      // return balance;
+      // if (coin != 'brl'){
+      //    console.log("o saldo é: "+coin.toUpperCase()+" "+ balance);
+      // }else{
+      //    console.log("o saldo em reais é: R$ " + balance);
+      // }
+      return callback(balance);
    });
-   // console.log("o saldo é..:" + balance);   
-   // (data) => console.log(data));
 }
 
 function getCoinValue(){
@@ -36,9 +34,21 @@ function getCoinValue(){
    });
 }
 
+function buyOrder(coin, value){
+   tradeApi.placeBuyOrder(qty, response.ticker.sell, (data) => {
+      console.log('Ordem de compra inserida no livro. '+data);
+      //operando em STOP
+      tradeApi.placeSellOrder(data.quantity, response.ticker.sell * parseFloat());
+   });
+}
 
+// execução do robô
 setInterval(() => {
-   getBalance(Coin);
+   var balance;
+   getBalance(Coin, (response) =>{
+      console.log('o saldo de '+Coin+' é: '+response);
+   });
+   
    getCoinValue();
    console.log('------------------------------');
    },
