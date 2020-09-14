@@ -23,7 +23,7 @@ function getQuantity(coin, price, isBuy, callback){
         var balance = parseFloat(response_data.balance[coin].available).toFixed(5);
         balance = parseFloat(balance);
         //verifica se tem no mínimo R$ 10,00 de saldo para compra
-        if(isBuy && balance < 10) return console.log('Sem saldo disponível para comprar!');
+        if(isBuy && balance < 10) return console.log('Saldo insuficiente para comprar!');
         console.log(`Saldo disponível de ${coin}: ${balance}`);
         // caso for compra, divide-se o saldo em reais pelo preço da moeda para definir a quantidade de compra
         if(isBuy) balance = parseFloat((balance / price).toFixed(5));
@@ -32,21 +32,29 @@ function getQuantity(coin, price, isBuy, callback){
     (data) => console.log(data))
 }
 
-// execução do robô
-setInterval(() => {
+setInterval(() => 
     infoApi.ticker((response) => {
         console.log(response.ticker);
-        if(response.ticker.sell <= 50000){
+        // verifica o valor de venda da criptomoeda
+        if(response.ticker.sell <= 3){
+            // busca saldo em reais para compra
             getQuantity('BRL', response.ticker.sell, true, (qty) => {
-                 tradeApi.placeBuyOrder(qty, response.ticker.sell, 
-                     (data) => {
-                         console.log('Ordem de compra inserida no livro. ' + data)
-                         //operando em STOP
-                         tradeApi.placeSellOrder(data.quantity, response.ticker.sell * parseFloat(process.env.PROFITABILITY), 
-                             (data) => console.log('Ordem de venda inserida no livro. ' + data),
-                             (data) => console.log('Erro ao inserir ordem de venda no livro. ' + data))
-                     },
-                     (data) => console.log('Erro ao inserir ordem de compra no livro. ' + data))
+                //cria ordem de compra
+                tradeApi.placeBuyOrder(qty, response.ticker.sell, 
+                    (data) => {
+                        console.log('Ordem de compra inserida no livro. ' + data)
+
+                        setTimeout(() =>
+                            //operando em STOP
+                            tradeApi.placeSellOrder(data.quantity, response.ticker.sell * parseFloat(Profit), 
+                                (data) => console.log('Ordem de venda inserida no livro. ' + data),
+                                (data) => console.log('Erro ao inserir ordem de venda no livro. ' + data)),
+                                2000
+                        )
+                    },
+                    (data) => console.log('Erro ao inserir ordem de compra no livro. ' + data))
             })
         }
-    }), Interval});
+    }),
+   process.env.CRAWLER_INTERVAL
+)

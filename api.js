@@ -36,7 +36,7 @@ MercadoBitcoinTrade.prototype = {
     },
 
     placeSellOrder: function(qty, limit_price, success, error){
-        this.call('place_sell_order', {coin_pair: `BRL${this.config.CURRENCY}`, quantity: (''+qty).substr(0,10), limit_price: ''+limit_price}, success, error)
+        this.call('place_sell_order', {coin_pair: `BRL${this.config.CURRENCY}`, quantity: parseFloat((''+qty).substr(0,10)), limit_price: ''+limit_price}, success, error)
     },
 
     cancelOrder: function (orderId, success, error) {
@@ -45,7 +45,9 @@ MercadoBitcoinTrade.prototype = {
 
     call: function (method, parameters, success, error) {
         var dataAtual = Math.round(new Date().getTime() / 1000)
+        // se for venda, incrementa o timestamp para concretizar a ordem de venda logo após a compra
         var queryString = qs.stringify({'tapi_method': method, 'tapi_nonce': dataAtual})
+        
         if(parameters) queryString += '&' + qs.stringify(parameters)
       
         var signature = crypto.createHmac('sha512', this.config.SECRET).update(ENDPOINT_TRADE_PATH + '?' + queryString).digest('hex')
