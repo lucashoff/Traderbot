@@ -46,11 +46,10 @@ setInterval(() =>
 
                         setTimeout(() =>
                             //operando em STOP
-                            tradeApi.placeSellOrder(data.quantity, response.ticker.sell * parseFloat(Profit), 
+                            tradeApi.placeSellOrder(data.order.quantity, parseFloat(response.ticker.sell * parseFloat(Profit)).toFixed(5), 
                                 (data) => console.log('Ordem de venda inserida no livro. ' + data),
                                 (data) => console.log('Erro ao inserir ordem de venda no livro. ' + data)),
-                                2000
-                        )
+                                2000)
                     },
                     (data) => console.log('Erro ao inserir ordem de compra no livro. ' + data))
             })
