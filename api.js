@@ -59,15 +59,15 @@ MercadoBitcoinTrade.prototype = {
                .headers({'TAPI-MAC': signature})
                .send(queryString)
                .end(function (response) {
-                   if(response.body){
-                      if (response.body.status_code === 100 && success)
-                          success(response.body.response_data)
-                      else if(error)
-                          error(response.body.error_message)
-                      else
-                          console.log(response.body)
-                   }
-                   else console.log(response)
+                    if(response.body){
+                        if (response.body.status_code === 100 && success)
+                            success(response.body.response_data)
+                        else if(error)
+                            error(response.body.error_message)
+                        else
+                            console.log(response.body)
+                    }
+                    else console.log(response)
                })
     }
 }

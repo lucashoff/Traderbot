@@ -42,16 +42,16 @@ setInterval(() =>
                 //cria ordem de compra
                 tradeApi.placeBuyOrder(qty, response.ticker.sell, 
                     (data) => {
-                        console.log('Ordem de compra inserida no livro. ' + data)
+                        console.table('Ordem de compra inserida no livro. ' + data.order)
 
                         setTimeout(() =>
                             //operando em STOP
-                            tradeApi.placeSellOrder(data.order.quantity, parseFloat(response.ticker.sell * parseFloat(Profit)).toFixed(5), 
+                            tradeApi.placeSellOrder((parseFloat(data.order.quantity - data.order.fee).toFixed(5) - 0.00001), parseFloat(response.ticker.sell * parseFloat(Profit)).toFixed(5), 
                                 (data) => console.log('Ordem de venda inserida no livro. ' + data),
                                 (data) => console.log('Erro ao inserir ordem de venda no livro. ' + data)),
                                 2000)
                     },
-                    (data) => console.log('Erro ao inserir ordem de compra no livro. ' + data))
+                    (data) => console.table('Erro ao inserir ordem de compra no livro. ' + data))
             })
         }
     }),
