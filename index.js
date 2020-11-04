@@ -36,7 +36,7 @@ setInterval(() =>
     infoApi.ticker((response) => {
         console.log(response.ticker);
         // verifica o valor de venda da criptomoeda
-        if(response.ticker.sell <= 3){
+        if(response.ticker.sell <= 90000){
             // busca saldo em reais para compra
             getQuantity('BRL', response.ticker.sell, true, (qty) => {
                 //cria ordem de compra
